@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 from collections import defaultdict
 from openai import OpenAI
-from .config import DASHSCOPE_API_KEY, QWEN_BASE_URL, QWEN_MODEL
+from .config import CHAT_API_KEY, QWEN_BASE_URL, QWEN_MODEL
 
 
 def get_season_from_temp_or_date(user_message):
@@ -149,7 +149,7 @@ def get_recommendations(user_message: str, wardrobe_path: str) -> dict:
     
     # Create OpenAI client with Qwen configuration
     client = OpenAI(
-        api_key=DASHSCOPE_API_KEY,
+        api_key=CHAT_API_KEY,
         base_url=QWEN_BASE_URL
     )
     

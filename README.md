@@ -77,7 +77,30 @@ To add a single new item without reprocessing all photos:
 python cataloging/add_item.py <filename.jpg>
 ```
 
-### 2. Start the Server
+### 2. Maintaining Your Wardrobe
+
+After your initial catalog, use the sync mechanism to update your wardrobe efficiently:
+
+- Delete photos of clothes you gave away from the `wardrobe_photos/` directory
+- Add photos of new clothes to the `wardrobe_photos/` directory
+- Run the sync script to process only the changes:
+```bash
+python cataloging/sync.py
+```
+
+The sync script will:
+- Identify new photos and send them through the Anthropic API for labeling
+- Remove entries for photos that no longer exist
+- Skip unchanged items entirely (no API calls)
+
+Useful sync options:
+- `--dry-run`: Preview what changes would be made without actually making them
+- `--yes`: Skip the confirmation prompt (useful for automation)
+- `--help`: Show all available options
+
+The sync script is the recommended way to update your wardrobe as it's more cost-effective than re-running the full catalog.
+
+### 4. Start the Server
 
 Launch the FastAPI server:
 ```bash
@@ -86,9 +109,41 @@ uvicorn backend.app:app --reload
 
 The application will be available at `http://localhost:8000`
 
-### 3. Use the Application
+### 5. Use the Application
 
 Visit `http://localhost:8000` in your browser to interact with the chat interface. Describe your plans, occasion, or weather conditions, and the AI will suggest coordinated outfits from your cataloged wardrobe.
+
+## API Architecture
+
+This project uses TWO separate API providers for different purposes:
+
+- **Cataloging (Vision)**: Requires a model with strong image understanding. Currently uses Anthropic Claude Sonnet via the `anthropic` SDK. This runs once when you catalog your wardrobe.
+  - Model: `claude-sonnet-4-20250514`
+  - Environment variable: `ANTHROPIC_API_KEY`
+
+- **Recommendation (Chat)**: Requires a model with good text reasoning. Currently uses Qwen3 via an OpenAI-compatible endpoint. This runs every time you ask for outfit advice.
+  - Model: `qwen3-coder-plus`
+  - Base URL: `https://coding.dashscope.aliyuncs.com/v1`
+  - Environment variable: `CHAT_API_KEY`
+
+These are intentionally decoupled — users can swap either one independently.
+
+## Switching API Providers
+
+### To use OpenAI for recommendations instead of Qwen:
+- In `.env`: replace `CHAT_API_KEY` with your OpenAI key
+- In `backend/config.py`: change `QWEN_BASE_URL` to `https://api.openai.com/v1` and `QWEN_MODEL` to `gpt-4o` (or your preferred model)
+- No other code changes needed since it already uses the `openai` SDK
+
+### To use a different OpenAI-compatible provider (Groq, Together, local Ollama, etc.):
+- In `.env`: set your provider's API key as `CHAT_API_KEY`
+- In `backend/config.py`: change `QWEN_BASE_URL` to your provider's endpoint and `QWEN_MODEL` to your model name
+- For Ollama (local): base_url is `http://localhost:11434/v1`, no API key needed
+
+### To use OpenAI or another vision-capable model for cataloging:
+- This requires code changes in `cataloging/catalog.py` and `add_item.py` since they use the `anthropic` SDK directly
+- You would need to replace the Anthropic client with the `openai` SDK and adjust the message format for image inputs
+- The system prompt and expected JSON output format can stay the same
 
 ## API Keys Configuration
 
@@ -101,7 +156,7 @@ This project uses two different AI services:
 - **Qwen API** (via `openai` Python SDK with custom base URL): Used for recommendation logic, season detection, and chat functionality
   - Model: `qwen3-coder-plus`
   - Base URL: `https://coding.dashscope.aliyuncs.com/v1`
-  - Environment variable: `DASHSCOPE_API_KEY`
+  - Environment variable: `CHAT_API_KEY`
 
 ## How It Works
 
