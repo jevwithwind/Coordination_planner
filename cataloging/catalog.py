@@ -2,6 +2,7 @@ import os
 import json
 import time
 import sys
+import argparse
 from .utils import (
     scan_image_files, process_single_image,
     load_wardrobe, save_wardrobe
@@ -12,11 +13,15 @@ import dotenv
 dotenv.load_dotenv()
 
 def main():
-    # Check for --force flag
-    force_process = '--force' in sys.argv
+    parser = argparse.ArgumentParser(description='Catalog wardrobe photos')
+    parser.add_argument('--user', required=True, help='Username for the user whose photos to catalog')
+    parser.add_argument('--force', action='store_true', help='Force re-processing of all photos')
+    args = parser.parse_args()
     
-    # Get all image files from wardrobe_photos directory
-    photos_dir = '../wardrobe_photos'
+    username = args.user
+    
+    # Get all image files from user's wardrobe_photos directory
+    photos_dir = f'../users/{username}/wardrobe_photos'
     image_files = scan_image_files(photos_dir)
     
     if not image_files:
@@ -26,13 +31,13 @@ def main():
     print(f"Found {len(image_files)} image files to process")
     
     # Load existing wardrobe
-    wardrobe_path = '../data/wardrobe.json'
+    wardrobe_path = f'../users/{username}/wardrobe.json'
     wardrobe = load_wardrobe(wardrobe_path)
     
     # Process each image
     for idx, filename in enumerate(image_files, 1):
         # Skip if file already exists in wardrobe and force flag is not set
-        if filename in wardrobe and not force_process:
+        if filename in wardrobe and not args.force:
             print(f"Skipping {idx}/{len(image_files)}: {filename} (already processed)")
             continue
         
@@ -55,7 +60,7 @@ def main():
             except json.JSONDecodeError as e:
                 print(f"  Error parsing JSON response for {filename}: {e}")
         else:
-            print(f"  Failed to analyze: {filename}")
+            print(f"  Failed to analyze {filename}")
     
     # Save the wardrobe
     save_wardrobe(wardrobe, wardrobe_path)

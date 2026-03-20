@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,49 +10,223 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         body {
-            background-color: #f5f7fa;
+            background-color: #f5f3ef;
             color: #333;
             line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
+        /* Profile Selection Screen */
+        .profile-selection-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
             padding: 20px;
-            height: calc(100vh - 120px);
+            background: linear-gradient(135deg, #f5f3ef 0%, #e8e4df 100%);
+        }
+
+        .screen-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .screen-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c2924;
+            margin-bottom: 8px;
+        }
+
+        .screen-subtitle {
+            color: #6b6b6b;
+            font-size: 1rem;
+        }
+
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .profile-card:active {
+            transform: translateY(0);
+        }
+
+        .profile-icon {
+            width: 60px;
+            height: 60px;
+            background: #2563eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: #2c2924;
+            margin-bottom: 4px;
+        }
+
+        .profile-count {
+            color: #6b6b6b;
+            font-size: 0.85rem;
+        }
+
+        .add-profile-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-profile-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* Dashboard Screen */
+        .dashboard-screen {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #2563eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-details {
             display: flex;
             flex-direction: column;
         }
 
-        header {
+        .user-display-name {
+            font-weight: 600;
+            color: #2c2924;
+        }
+
+        .user-item-count {
+            font-size: 0.85rem;
+            color: #6b6b6b;
+        }
+
+        .switch-profile-btn {
+            background: #f0f0f0;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .switch-profile-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
             text-align: center;
-            padding: 20px 0;
-            margin-bottom: 20px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #6b6b6b;
+            border-bottom: 2px solid transparent;
         }
 
-        h1 {
-            color: #2c3e50;
-            font-size: 2.2rem;
-            margin-bottom: 10px;
+        .tab.active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            font-weight: 600;
         }
 
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.1rem;
+        .tab-content {
+            display: none;
+            flex: 1;
+            overflow: hidden;
+            flex-direction: column;
         }
 
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* Chat Tab */
         .chat-container {
             flex: 1;
             overflow-y: auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             padding: 20px;
-            margin-bottom: 20px;
             display: flex;
             flex-direction: column;
         }
@@ -63,8 +238,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .user-message {
@@ -73,7 +255,7 @@
         }
 
         .user-bubble {
-            background: #3498db;
+            background: #2563eb;
             color: white;
             padding: 12px 16px;
             border-radius: 18px 18px 4px 18px;
@@ -85,26 +267,27 @@
         }
 
         .assistant-bubble {
-            background: #ecf0f1;
-            color: #2c3e50;
+            background: white;
+            color: #2c2924;
             padding: 12px 16px;
             border-radius: 18px 18px 18px 4px;
             display: inline-block;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .outfit-card {
             background: white;
             border: 1px solid #e0e0e0;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 15px;
             margin: 15px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .outfit-name {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2c2924;
             margin-bottom: 8px;
         }
 
@@ -112,38 +295,61 @@
             color: #555;
             margin-bottom: 12px;
             font-style: italic;
+            font-size: 0.95rem;
         }
 
         .outfit-items {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 5px 0;
+            scrollbar-width: thin;
+        }
+
+        .outfit-items::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .outfit-items::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 3px;
+        }
+
+        .outfit-items::-webkit-scrollbar-thumb {
+            background: #c0c0c0;
+            border-radius: 3px;
         }
 
         .item-image {
             width: 80px;
             height: 80px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #ddd;
+            flex-shrink: 0;
         }
 
         .styling-tips {
-            background: #f8f9fa;
-            border-left: 4px solid #3498db;
+            background: #f8fafc;
+            border-left: 3px solid #2563eb;
             padding: 12px 15px;
             margin-top: 15px;
             border-radius: 0 6px 6px 0;
+            font-size: 0.95rem;
         }
 
         .input-area {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
             display: flex;
             gap: 10px;
         }
 
         #message-input {
             flex: 1;
-            padding: 14px;
+            padding: 12px 16px;
             border: 1px solid #ddd;
             border-radius: 24px;
             font-size: 1rem;
@@ -152,12 +358,12 @@
         }
 
         #message-input:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
         }
 
         #send-button {
-            background: #3498db;
+            background: #2563eb;
             color: white;
             border: none;
             border-radius: 24px;
@@ -168,252 +374,921 @@
         }
 
         #send-button:hover {
-            background: #2980b9;
+            background: #1d4ed8;
         }
 
         #send-button:disabled {
-            background: #bdc3c7;
+            background: #b0b0b0;
             cursor: not-allowed;
         }
 
-        .loading {
+        .typing-indicator {
             display: flex;
-            justify-content: center;
             align-items: center;
             padding: 10px;
+            color: #6b6b6b;
         }
 
-        .spinner {
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #6b6b6b;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Wardrobe Tab */
+        .wardrobe-header {
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .upload-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .wardrobe-grid {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .wardrobe-item {
+            position: relative;
+            aspect-ratio: 1/1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .wardrobe-item-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .wardrobe-item-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 6px;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        .wardrobe-item-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .delete-btn {
+            background: rgba(220, 38, 38, 0.8);
+            color: white;
+            border: none;
+            border-radius: 4px;
             width: 24px;
             height: 24px;
-            border: 3px solid rgba(52, 152, 219, 0.3);
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .welcome-message {
+        .empty-state {
             text-align: center;
-            color: #7f8c8d;
-            padding: 20px;
-            font-style: italic;
+            padding: 40px 20px;
+            color: #6b6b6b;
         }
 
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .catalog-progress {
+            padding: 15px 20px;
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            border-radius: 8px;
+            margin: 15px 20px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #f59e0b;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c2924;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .modal-btn.primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-                height: calc(100vh - 100px);
+            .profiles-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             }
-            
-            h1 {
-                font-size: 1.8rem;
+
+            .wardrobe-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             }
-            
-            .message {
-                max-width: 90%;
+        }
+
+        @media (max-width: 480px) {
+            .profiles-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
-            
-            .item-image {
-                width: 70px;
-                height: 70px;
+
+            .wardrobe-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+
+            .screen-title {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>Wardrobe Coordination Planner</h1>
-            <p class="subtitle">Describe your day, occasion, or weather - get personalized outfit recommendations</p>
-        </header>
-        
-        <div class="chat-container" id="chat-container">
-            <div class="message assistant-message">
-                <div class="assistant-bubble">
-                    Hello! I'm your personal styling assistant. Describe your plans for the day, the occasion, or the weather, and I'll suggest some outfits from your wardrobe.
+    <!-- Profile Selection Screen -->
+    <div id="profile-selection-screen" class="profile-selection-screen">
+        <div class="screen-header">
+            <h1 class="screen-title">Wardrobe Coordination Planner</h1>
+            <p class="screen-subtitle">Select your profile to get started</p>
+        </div>
+
+        <div id="profiles-grid" class="profiles-grid">
+            <!-- Profiles will be loaded here -->
+        </div>
+
+        <button id="add-profile-btn" class="add-profile-btn">
+            <span>+ Add Profile</span>
+        </button>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboard-screen" class="dashboard-screen">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <div id="user-avatar" class="user-avatar">U</div>
+                <div class="user-details">
+                    <div id="user-display-name" class="user-display-name">User Name</div>
+                    <div id="user-item-count" class="user-item-count">0 items</div>
                 </div>
             </div>
+            <button id="switch-profile-btn" class="switch-profile-btn">Switch Profile</button>
         </div>
-        
-        <div class="input-area">
-            <input type="text" id="message-input" placeholder="e.g., 'Casual day at the office', 'Going to a wedding', 'Cold winter day'" autocomplete="off">
-            <button id="send-button">Send</button>
+
+        <div class="tabs">
+            <button id="chat-tab" class="tab active">Get Outfit Advice</button>
+            <button id="wardrobe-tab" class="tab">My Wardrobe</button>
+        </div>
+
+        <!-- Chat Tab Content -->
+        <div id="chat-tab-content" class="tab-content active">
+            <div class="chat-container" id="chat-container">
+                <div class="message assistant-message">
+                    <div class="assistant-bubble">
+                        Hello! I'm your personal styling assistant. Describe your plans for the day, the occasion, or
+                        the weather, and I'll suggest some outfits from your wardrobe.
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="message-input"
+                    placeholder="e.g., 'Casual day at the office', 'Going to a wedding', 'Cold winter day'"
+                    autocomplete="off">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+
+        <!-- Wardrobe Tab Content -->
+        <div id="wardrobe-tab-content" class="tab-content">
+            <div class="wardrobe-header">
+                <select id="filter-select" class="filter-select">
+                    <option value="all">All Items</option>
+                    <option value="top">Tops</option>
+                    <option value="bottom">Bottoms</option>
+                    <option value="outerwear">Outerwear</option>
+                    <option value="footwear">Footwear</option>
+                    <option value="accessory">Accessories</option>
+                    <option value="base_layer">Base Layers</option>
+                    <option value="dress">Dresses</option>
+                </select>
+                <button id="upload-btn" class="upload-btn">Upload</button>
+            </div>
+
+            <div id="catalog-progress" class="catalog-progress" style="display: none;">
+                <div>Cataloging new photos...</div>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <div id="progress-text">Initializing...</div>
+            </div>
+
+            <div id="wardrobe-grid" class="wardrobe-grid">
+                <!-- Wardrobe items will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Profile Modal -->
+    <div id="add-profile-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Create New Profile</h3>
+            <input type="text" id="profile-name-input" class="modal-input" placeholder="Enter display name"
+                maxlength="50">
+            <div class="modal-buttons">
+                <button id="cancel-profile-btn" class="modal-btn secondary">Cancel</button>
+                <button id="create-profile-btn" class="modal-btn primary">Create</button>
+            </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatContainer = document.getElementById('chat-container');
-            const messageInput = document.getElementById('message-input');
-            const sendButton = document.getElementById('send-button');
-            
-            // Function to add a message to the chat
-            function addMessage(role, content) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${role}-message`;
-                
-                const bubbleDiv = document.createElement('div');
-                bubbleDiv.className = `${role}-bubble`;
-                
-                if (role === 'user') {
-                    bubbleDiv.textContent = content;
-                } else {
-                    // For assistant messages, we need to handle potential outfit recommendations
-                    if (typeof content === 'object') {
-                        // This is an outfit recommendation
-                        bubbleDiv.innerHTML = '<p><strong>Here are my recommendations:</strong></p>';
-                        
-                        if (content.outfits && content.outfits.length > 0) {
-                            content.outfits.forEach(outfit => {
-                                const outfitCard = document.createElement('div');
-                                outfitCard.className = 'outfit-card';
-                                
-                                const outfitName = document.createElement('div');
-                                outfitName.className = 'outfit-name';
-                                outfitName.textContent = outfit.name;
-                                
-                                const outfitReasoning = document.createElement('div');
-                                outfitReasoning.className = 'outfit-reasoning';
-                                outfitReasoning.textContent = outfit.reasoning;
-                                
-                                const outfitItems = document.createElement('div');
-                                outfitItems.className = 'outfit-items';
-                                
-                                outfit.items.forEach(itemFilename => {
-                                    const img = document.createElement('img');
-                                    img.src = `/photos/${itemFilename}`;
-                                    img.alt = itemFilename;
-                                    img.className = 'item-image';
-                                    
-                                    // Add error handling for images that don't exist
-                                    img.onerror = function() {
-                                        this.style.display = 'none';
-                                        const placeholder = document.createElement('div');
-                                        placeholder.className = 'item-placeholder';
-                                        placeholder.style.width = '80px';
-                                        placeholder.style.height = '80px';
-                                        placeholder.style.backgroundColor = '#eee';
-                                        placeholder.style.display = 'flex';
-                                        placeholder.style.alignItems = 'center';
-                                        placeholder.style.justifyContent = 'center';
-                                        placeholder.style.borderRadius = '6px';
-                                        placeholder.style.border = '1px solid #ddd';
-                                        placeholder.textContent = 'Image not found';
-                                        this.parentNode.replaceChild(placeholder, this);
-                                    };
-                                    
-                                    outfitItems.appendChild(img);
-                                });
-                                
-                                outfitCard.appendChild(outfitName);
-                                outfitCard.appendChild(outfitReasoning);
-                                outfitCard.appendChild(outfitItems);
-                                bubbleDiv.appendChild(outfitCard);
-                            });
-                            
-                            if (content.styling_tips) {
-                                const tipsDiv = document.createElement('div');
-                                tipsDiv.className = 'styling-tips';
-                                tipsDiv.innerHTML = `<strong>Styling Tips:</strong> ${content.styling_tips}`;
-                                bubbleDiv.appendChild(tipsDiv);
-                            }
-                        } else {
-                            bubbleDiv.textContent = "I couldn't find any suitable outfits in your wardrobe for this request.";
-                        }
-                    } else {
-                        bubbleDiv.textContent = content;
-                    }
-                }
-                
-                messageDiv.appendChild(bubbleDiv);
-                chatContainer.appendChild(messageDiv);
-                
-                // Scroll to the bottom
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
-            
-            // Function to send a message
-            async function sendMessage() {
-                const message = messageInput.value.trim();
-                if (!message) return;
-                
-                // Add user message to chat
-                addMessage('user', message);
-                messageInput.value = '';
-                
-                // Disable input and show loading
-                messageInput.disabled = true;
-                sendButton.disabled = true;
-                sendButton.textContent = '';
-                
-                const loadingDiv = document.createElement('div');
-                loadingDiv.className = 'loading';
-                loadingDiv.id = 'loading';
-                loadingDiv.innerHTML = '<div class="spinner"></div>';
-                chatContainer.appendChild(loadingDiv);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-                
-                try {
-                    // Send message to backend
-                    const response = await fetch('/api/chat', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ message: message })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Server error: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    // Remove loading indicator
-                    const loadingElement = document.getElementById('loading');
-                    if (loadingElement) {
-                        loadingElement.remove();
-                    }
-                    
-                    // Add assistant response to chat
-                    addMessage('assistant', data);
-                } catch (error) {
-                    console.error('Error:', error);
-                    
-                    // Remove loading indicator
-                    const loadingElement = document.getElementById('loading');
-                    if (loadingElement) {
-                        loadingElement.remove();
-                    }
-                    
-                    // Add error message
-                    addMessage('assistant', 'Sorry, I encountered an error while processing your request. Please try again.');
-                } finally {
-                    // Re-enable input
-                    messageInput.disabled = false;
-                    sendButton.disabled = false;
-                    sendButton.textContent = 'Send';
-                    messageInput.focus();
-                }
-            }
-            
+        // Global state
+        let currentUser = null;
+        let currentWardrobe = {};
+        let eventSource = null;
+
+        // DOM Elements
+        const profileSelectionScreen = document.getElementById('profile-selection-screen');
+        const dashboardScreen = document.getElementById('dashboard-screen');
+        const profilesGrid = document.getElementById('profiles-grid');
+        const addProfileBtn = document.getElementById('add-profile-btn');
+        const addProfileModal = document.getElementById('add-profile-modal');
+        const profileNameInput = document.getElementById('profile-name-input');
+        const cancelProfileBtn = document.getElementById('cancel-profile-btn');
+        const createProfileBtn = document.getElementById('create-profile-btn');
+        const userAvatar = document.getElementById('user-avatar');
+        const userDisplayName = document.getElementById('user-display-name');
+        const userItemCount = document.getElementById('user-item-count');
+        const switchProfileBtn = document.getElementById('switch-profile-btn');
+        const chatTab = document.getElementById('chat-tab');
+        const wardrobeTab = document.getElementById('wardrobe-tab');
+        const chatTabContent = document.getElementById('chat-tab-content');
+        const wardrobeTabContent = document.getElementById('wardrobe-tab-content');
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const filterSelect = document.getElementById('filter-select');
+        const uploadBtn = document.getElementById('upload-btn');
+        const wardrobeGrid = document.getElementById('wardrobe-grid');
+        const catalogProgress = document.getElementById('catalog-progress');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function () {
+            loadProfiles();
+
             // Event listeners
+            addProfileBtn.addEventListener('click', () => {
+                addProfileModal.style.display = 'flex';
+                profileNameInput.value = '';
+                profileNameInput.focus();
+            });
+
+            cancelProfileBtn.addEventListener('click', () => {
+                addProfileModal.style.display = 'none';
+            });
+
+            createProfileBtn.addEventListener('click', createProfile);
+
+            switchProfileBtn.addEventListener('click', () => {
+                dashboardScreen.style.display = 'none';
+                profileSelectionScreen.style.display = 'flex';
+                currentUser = null;
+            });
+
+            chatTab.addEventListener('click', () => {
+                setActiveTab('chat');
+            });
+
+            wardrobeTab.addEventListener('click', () => {
+                setActiveTab('wardrobe');
+                loadWardrobe();
+            });
+
             sendButton.addEventListener('click', sendMessage);
-            
-            messageInput.addEventListener('keypress', function(e) {
+
+            messageInput.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     sendMessage();
                 }
             });
-            
-            // Focus the input field
-            messageInput.focus();
+
+            uploadBtn.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.multiple = true;
+                input.accept = 'image/*';
+                input.onchange = handleFileUpload;
+                input.click();
+            });
+
+            filterSelect.addEventListener('change', renderWardrobeGrid);
         });
+
+        // Load user profiles
+        async function loadProfiles() {
+            try {
+                const response = await fetch('/api/users');
+                const profiles = await response.json();
+
+                profilesGrid.innerHTML = '';
+
+                for (const [username, profile] of Object.entries(profiles)) {
+                    const itemCount = await getUserItemCount(username);
+
+                    const profileCard = document.createElement('div');
+                    profileCard.className = 'profile-card';
+                    profileCard.innerHTML = `
+                        <div class="profile-icon">${profile.display_name.charAt(0)}</div>
+                        <div class="profile-name">${profile.display_name}</div>
+                        <div class="profile-count">${itemCount} items</div>
+                    `;
+
+                    profileCard.addEventListener('click', () => {
+                        selectProfile(username, profile.display_name, itemCount);
+                    });
+
+                    profilesGrid.appendChild(profileCard);
+                }
+            } catch (error) {
+                console.error('Error loading profiles:', error);
+                alert('Error loading profiles. Please try again.');
+            }
+        }
+
+        // Get user item count
+        async function getUserItemCount(username) {
+            try {
+                const response = await fetch(`/api/wardrobe/${username}`);
+                const wardrobe = await response.json();
+                return Object.keys(wardrobe).length;
+            } catch (error) {
+                console.error(`Error getting item count for ${username}:`, error);
+                return 0;
+            }
+        }
+
+        // Select a profile
+        function selectProfile(username, displayName, itemCount) {
+            currentUser = username;
+            userDisplayName.textContent = displayName;
+            userItemCount.textContent = `${itemCount} items`;
+            userAvatar.textContent = displayName.charAt(0).toUpperCase();
+
+            profileSelectionScreen.style.display = 'none';
+            dashboardScreen.style.display = 'flex';
+
+            // Reset chat
+            chatContainer.innerHTML = `
+                <div class="message assistant-message">
+                    <div class="assistant-bubble">
+                        Hello ${displayName}! I'm your personal styling assistant. Describe your plans for the day, the occasion, or the weather, and I'll suggest some outfits from your wardrobe.
+                    </div>
+                </div>
+            `;
+        }
+
+        // Create a new profile
+        async function createProfile() {
+            const displayName = profileNameInput.value.trim();
+            if (!displayName) {
+                alert('Please enter a display name');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ display_name: displayName })
+                });
+
+                if (!response.ok) {
+                    throw new Error(await response.text());
+                }
+
+                const result = await response.json();
+                addProfileModal.style.display = 'none';
+
+                // Reload profiles and select the new one
+                setTimeout(() => {
+                    loadProfiles();
+                }, 500);
+            } catch (error) {
+                console.error('Error creating profile:', error);
+                alert('Error creating profile: ' + error.message);
+            }
+        }
+
+        // Set active tab
+        function setActiveTab(tabName) {
+            if (tabName === 'chat') {
+                chatTab.classList.add('active');
+                wardrobeTab.classList.remove('active');
+                chatTabContent.classList.add('active');
+                wardrobeTabContent.classList.remove('active');
+            } else {
+                chatTab.classList.remove('active');
+                wardrobeTab.classList.add('active');
+                chatTabContent.classList.remove('active');
+                wardrobeTabContent.classList.add('active');
+                loadWardrobe(); // Load wardrobe when switching to this tab
+            }
+        }
+
+        // Send a message
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message || !currentUser) return;
+
+            // Add user message to chat
+            addMessage('user', message);
+            messageInput.value = '';
+
+            // Disable input and show typing indicator
+            messageInput.disabled = true;
+            sendButton.disabled = true;
+
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <span>Thinking</span>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatContainer.appendChild(typingIndicator);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            try {
+                // Send message to backend
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        username: currentUser
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Remove typing indicator
+                const typingEl = document.getElementById('typing-indicator');
+                if (typingEl) {
+                    typingEl.remove();
+                }
+
+                // Add assistant response to chat
+                addMessage('assistant', data);
+            } catch (error) {
+                console.error('Error:', error);
+
+                // Remove typing indicator
+                const typingEl = document.getElementById('typing-indicator');
+                if (typingEl) {
+                    typingEl.remove();
+                }
+
+                // Add error message
+                addMessage('assistant', 'Sorry, I encountered an error while processing your request. Please try again.');
+            } finally {
+                // Re-enable input
+                messageInput.disabled = false;
+                sendButton.disabled = false;
+                messageInput.focus();
+            }
+        }
+
+        // Add a message to the chat
+        function addMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}-message`;
+
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = `${role}-bubble`;
+
+            if (role === 'user') {
+                bubbleDiv.textContent = content;
+            } else {
+                // For assistant messages, we need to handle potential outfit recommendations
+                if (typeof content === 'object') {
+                    // This is an outfit recommendation
+                    bubbleDiv.innerHTML = '<p><strong>Here are my recommendations:</strong></p>';
+
+                    if (content.outfits && content.outfits.length > 0) {
+                        content.outfits.forEach(outfit => {
+                            const outfitCard = document.createElement('div');
+                            outfitCard.className = 'outfit-card';
+
+                            const outfitName = document.createElement('div');
+                            outfitName.className = 'outfit-name';
+                            outfitName.textContent = outfit.name;
+
+                            const outfitReasoning = document.createElement('div');
+                            outfitReasoning.className = 'outfit-reasoning';
+                            outfitReasoning.textContent = outfit.reasoning;
+
+                            const outfitItems = document.createElement('div');
+                            outfitItems.className = 'outfit-items';
+
+                            outfit.items.forEach(itemFilename => {
+                                const img = document.createElement('img');
+                                img.src = `/photos/${currentUser}/${itemFilename}`;
+                                img.alt = itemFilename;
+                                img.className = 'item-image';
+
+                                // Add error handling for images that don't exist
+                                img.onerror = function () {
+                                    this.style.display = 'none';
+                                    const placeholder = document.createElement('div');
+                                    placeholder.className = 'item-placeholder';
+                                    placeholder.style.width = '80px';
+                                    placeholder.style.height = '80px';
+                                    placeholder.style.backgroundColor = '#eee';
+                                    placeholder.style.display = 'flex';
+                                    placeholder.style.alignItems = 'center';
+                                    placeholder.style.justifyContent = 'center';
+                                    placeholder.style.borderRadius = '8px';
+                                    placeholder.style.border = '1px solid #ddd';
+                                    placeholder.textContent = 'Image not found';
+                                    this.parentNode.replaceChild(placeholder, this);
+                                };
+
+                                outfitItems.appendChild(img);
+                            });
+
+                            outfitCard.appendChild(outfitName);
+                            outfitCard.appendChild(outfitReasoning);
+                            outfitCard.appendChild(outfitItems);
+                            bubbleDiv.appendChild(outfitCard);
+                        });
+
+                        if (content.styling_tips) {
+                            const tipsDiv = document.createElement('div');
+                            tipsDiv.className = 'styling-tips';
+                            tipsDiv.innerHTML = `<strong>Styling Tips:</strong> ${content.styling_tips}`;
+                            bubbleDiv.appendChild(tipsDiv);
+                        }
+                    } else {
+                        bubbleDiv.textContent = "I couldn't find any suitable outfits in your wardrobe for this request.";
+                    }
+                } else {
+                    bubbleDiv.textContent = content;
+                }
+            }
+
+            messageDiv.appendChild(bubbleDiv);
+            chatContainer.appendChild(messageDiv);
+
+            // Scroll to the bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Load wardrobe for current user
+        async function loadWardrobe() {
+            if (!currentUser) return;
+
+            try {
+                const response = await fetch(`/api/wardrobe/${currentUser}`);
+                currentWardrobe = await response.json();
+                renderWardrobeGrid();
+            } catch (error) {
+                console.error('Error loading wardrobe:', error);
+                wardrobeGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">衣柜</div>
+                        <h3>Error Loading Wardrobe</h3>
+                        <p>Please try refreshing the page</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render wardrobe grid based on filter
+        function renderWardrobeGrid() {
+            if (!currentWardrobe) return;
+
+            const filter = filterSelect.value;
+            const items = Object.entries(currentWardrobe);
+
+            // Filter items based on selection
+            let filteredItems = items;
+            if (filter !== 'all') {
+                filteredItems = items.filter(([filename, item]) => {
+                    return item.category === filter;
+                });
+            }
+
+            wardrobeGrid.innerHTML = '';
+
+            if (filteredItems.length === 0) {
+                wardrobeGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👕</div>
+                        <h3>No Items Yet</h3>
+                        <p>Upload photos of your clothes to get started</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredItems.forEach(([filename, item]) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'wardrobe-item';
+
+                const img = document.createElement('img');
+                img.src = `/photos/${currentUser}/${filename}`;
+                img.alt = filename;
+                img.className = 'wardrobe-item-img';
+
+                // Add error handling for images that don't exist
+                img.onerror = function () {
+                    this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24"><rect width="24" height="24" fill="%23f0f0f0"/><text x="12" y="16" font-size="12" text-anchor="middle" fill="%23999">No Image</text></svg>';
+                };
+
+                const label = document.createElement('div');
+                label.className = 'wardrobe-item-label';
+                label.textContent = `${item.category.charAt(0).toUpperCase() + item.category.slice(1)} · ${item.color}`;
+
+                const actions = document.createElement('div');
+                actions.className = 'wardrobe-item-actions';
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = '×';
+                deleteBtn.title = 'Delete item';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm('Are you sure you want to delete this item?')) {
+                        deleteWardrobeItem(filename);
+                    }
+                });
+
+                actions.appendChild(deleteBtn);
+
+                itemDiv.appendChild(img);
+                itemDiv.appendChild(label);
+                itemDiv.appendChild(actions);
+
+                wardrobeGrid.appendChild(itemDiv);
+            });
+        }
+
+        // Handle file upload
+        async function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
+
+            try {
+                const formData = new FormData();
+                files.forEach(file => {
+                    formData.append('files', file);
+                });
+
+                const response = await fetch(`/api/upload/${currentUser}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Upload failed: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log('Uploaded files:', result.uploaded_files);
+
+                // Start cataloging the new photos
+                startCataloging();
+            } catch (error) {
+                console.error('Error uploading files:', error);
+                alert('Error uploading files: ' + error.message);
+            }
+        }
+
+        // Start cataloging process
+        async function startCataloging() {
+            if (!currentUser) return;
+
+            catalogProgress.style.display = 'block';
+            progressText.textContent = 'Starting cataloging...';
+            progressFill.style.width = '0%';
+
+            // Close any existing event source
+            if (eventSource) {
+                eventSource.close();
+            }
+
+            // Connect to the SSE endpoint
+            eventSource = new EventSource(`/api/catalog/${currentUser}`);
+
+            eventSource.onmessage = function (event) {
+                try {
+                    const data = JSON.parse(event.data);
+
+                    if (data.status === 'started') {
+                        progressText.textContent = data.message;
+                        progressFill.style.width = '10%';
+                    } else if (data.status === 'processing') {
+                        const percent = Math.round((data.current / data.total) * 90) + 10; // 10-100%
+                        progressText.textContent = `${data.message} (${data.current}/${data.total})`;
+                        progressFill.style.width = `${percent}%`;
+                    } else if (data.status === 'complete') {
+                        progressText.textContent = data.message;
+                        progressFill.style.width = '100%';
+
+                        // Refresh wardrobe after a short delay
+                        setTimeout(() => {
+                            loadWardrobe();
+                            catalogProgress.style.display = 'none';
+                        }, 1000);
+
+                        eventSource.close();
+                    } else if (data.status === 'error') {
+                        progressText.textContent = `Error: ${data.message}`;
+                        eventSource.close();
+
+                        setTimeout(() => {
+                            catalogProgress.style.display = 'none';
+                        }, 3000);
+                    }
+                } catch (e) {
+                    console.error('Error parsing SSE data:', e);
+                }
+            };
+
+            eventSource.onerror = function () {
+                eventSource.close();
+                progressText.textContent = 'Connection error. Retrying...';
+
+                setTimeout(() => {
+                    catalogProgress.style.display = 'none';
+                }, 2000);
+            };
+        }
+
+        // Delete a wardrobe item
+        async function deleteWardrobeItem(filename) {
+            try {
+                const response = await fetch(`/api/wardrobe/${currentUser}/${filename}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Delete failed: ${response.statusText}`);
+                }
+
+                // Remove from local wardrobe data
+                delete currentWardrobe[filename];
+
+                // Re-render the wardrobe grid
+                renderWardrobeGrid();
+
+                // Update item count in header
+                userItemCount.textContent = `${Object.keys(currentWardrobe).length} items`;
+            } catch (error) {
+                console.error('Error deleting item:', error);
+                alert('Error deleting item: ' + error.message);
+            }
+        }
     </script>
 </body>
+
 </html>

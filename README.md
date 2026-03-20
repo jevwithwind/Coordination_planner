@@ -13,18 +13,22 @@ A smart wardrobe management system that uses AI to help you coordinate outfits b
 
 ```
 Coordination_planner/
-├── wardrobe_photos/          # User drops clothing photos here
-├── cataloging/
-│   ├── catalog.py            # One-time script to label all clothes via Claude Vision API
-│   └── add_item.py           # Script to add a single new item without re-processing all
-├── data/
-│   └── wardrobe.json         # Generated clothing database
+├── users/
+│   ├── Kevin/
+│   │   ├── wardrobe_photos/    # Kevin's clothing photos
+│   │   └── wardrobe.json       # Kevin's catalog
+│   ├── NIU/
+│   │   ├── wardrobe_photos/
+│   │   └── wardrobe.json
+│   └── ...
 ├── backend/
 │   ├── app.py                # FastAPI server (chat endpoint + static file serving)
 │   ├── recommend.py          # Recommendation logic: pre-filter → Qwen API → structured JSON
 │   └── config.py             # API key loading, constants
 ├── frontend/
-│   └── index.html            # Single-page chat UI with image display
+│   └── index.html            # Single-page app UI with image display
+├── cataloging/
+│   └── utils.py              # Shared cataloging logic
 ├── requirements.txt
 ├── .env                      # API keys go here
 └── README.md
@@ -59,59 +63,43 @@ Coordination_planner/
 
 ## Usage
 
-The system operates in three main stages:
+The system now supports multiple users in a household:
 
-### 1. Catalog Your Wardrobe
+### 1. Install Dependencies and Set Up
 
-Place all your clothing photos in the `wardrobe_photos/` directory. Supported formats: JPG, JPEG, PNG, WEBP, HEIC.
-
-Run the cataloging script to analyze all images:
+1. Install dependencies:
 ```bash
-python cataloging/catalog.py
+pip install -r requirements.txt
 ```
 
-This will create `data/wardrobe.json` with detailed information about each clothing item.
-
-To add a single new item without reprocessing all photos:
+2. Set up environment variables:
 ```bash
-python cataloging/add_item.py <filename.jpg>
+cp .env.example .env
+# Edit .env and add your API keys
 ```
 
-### 2. Maintaining Your Wardrobe
+### 2. Run the Server
 
-After your initial catalog, use the sync mechanism to update your wardrobe efficiently:
-
-- Delete photos of clothes you gave away from the `wardrobe_photos/` directory
-- Add photos of new clothes to the `wardrobe_photos/` directory
-- Run the sync script to process only the changes:
+Launch the FastAPI server to make it accessible on your local network:
 ```bash
-python cataloging/sync.py
+uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-The sync script will:
-- Identify new photos and send them through the Anthropic API for labeling
-- Remove entries for photos that no longer exist
-- Skip unchanged items entirely (no API calls)
+### 3. Access from Any Device
 
-Useful sync options:
-- `--dry-run`: Preview what changes would be made without actually making them
-- `--yes`: Skip the confirmation prompt (useful for automation)
-- `--help`: Show all available options
+On any device connected to the same network, open `http://<your-mac-ip>:8000`
 
-The sync script is the recommended way to update your wardrobe as it's more cost-effective than re-running the full catalog.
-
-### 4. Start the Server
-
-Launch the FastAPI server:
+To find your Mac's local IP address:
 ```bash
-uvicorn backend.app:app --reload
+ifconfig | grep "inet " | grep -v 127.0.0.1
 ```
 
-The application will be available at `http://localhost:8000`
+### 4. Create User Profiles
 
-### 5. Use the Application
-
-Visit `http://localhost:8000` in your browser to interact with the chat interface. Describe your plans, occasion, or weather conditions, and the AI will suggest coordinated outfits from your cataloged wardrobe.
+1. Create a profile for each household member through the web UI
+2. Upload photos of clothing items using the "Upload Photos" button
+3. The system will automatically catalog the new items
+4. Start chatting for outfit recommendations
 
 ## API Architecture
 

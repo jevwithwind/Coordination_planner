@@ -3,18 +3,20 @@ import sys
 import json
 import argparse
 from utils import (
-    get_supported_extensions, scan_image_files, process_single_image,
+    scan_image_files, process_single_image, 
     load_wardrobe, save_wardrobe
 )
 
 def main():
     parser = argparse.ArgumentParser(description='Sync wardrobe photos with catalog')
+    parser.add_argument('--user', required=True, help='Username for the user whose photos to sync')
     parser.add_argument('--yes', action='store_true', help='Skip confirmation prompt')
     parser.add_argument('--dry-run', action='store_true', help='Show what would be changed without making changes')
     args = parser.parse_args()
     
-    photos_dir = '../wardrobe_photos'
-    wardrobe_path = '../data/wardrobe.json'
+    username = args.user
+    photos_dir = f'../users/{username}/wardrobe_photos'
+    wardrobe_path = f'../users/{username}/wardrobe.json'
     
     # Get current image files
     image_files = set(scan_image_files(photos_dir))

@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import argparse
 from .utils import process_single_image, load_wardrobe, save_wardrobe
 import dotenv
 
@@ -8,14 +9,16 @@ import dotenv
 dotenv.load_dotenv()
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python add_item.py <image_filename>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description='Add a single item to wardrobe')
+    parser.add_argument('filename', help='Filename of the image to add')
+    parser.add_argument('--user', required=True, help='Username for the user whose wardrobe to update')
+    args = parser.parse_args()
     
-    image_filename = sys.argv[1]
+    image_filename = args.filename
+    username = args.user
     
-    # Check if the file exists in wardrobe_photos
-    photos_dir = '../wardrobe_photos'
+    # Check if the file exists in user's wardrobe_photos
+    photos_dir = f'../users/{username}/wardrobe_photos'
     image_path = os.path.join(photos_dir, image_filename)
     
     if not os.path.exists(image_path):
@@ -45,7 +48,7 @@ def main():
             item_data = json.loads(result)
             
             # Load existing wardrobe
-            wardrobe_path = '../data/wardrobe.json'
+            wardrobe_path = f'../users/{username}/wardrobe.json'
             wardrobe = load_wardrobe(wardrobe_path)
             
             # Add the new item
@@ -54,7 +57,7 @@ def main():
             # Save the updated wardrobe
             save_wardrobe(wardrobe, wardrobe_path)
             
-            print(f"Successfully added {image_filename} to wardrobe catalog")
+            print(f"Successfully added {image_filename} to {username}'s wardrobe catalog")
         except json.JSONDecodeError as e:
             print(f"Error parsing JSON response: {e}")
             sys.exit(1)
