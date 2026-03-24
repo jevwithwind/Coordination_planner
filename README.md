@@ -40,13 +40,13 @@ Coordination_planner/
 
 - Python 3.8+
 - Anthropic API Key (for image analysis)
-- DashScope API Key (for recommendation engine)
+- OpenAI-compatible API Key (for recommendation engine, lower cost per use)
 
 ### Installation
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone <https://github.com/jevwithwind/Coordination_planner>
    cd Coordination_planner
    ```
 
@@ -60,6 +60,34 @@ Coordination_planner/
    cp .env.example .env
    # Edit .env and add your API keys
    ```
+
+## How It Works
+
+### Clothing Categorization Schema
+The system uses a detailed categorization schema to understand your wardrobe:
+- **6 primary categories**: outerwear, layered_wear, inner_wear, bottoms, shoes, accessories
+- Each item is tagged with color, material, thickness, occasion, silhouette, and season
+- AI vision (Claude Sonnet) analyzes each photo once to generate these detailed tags
+
+### Outfit Recommendations
+- Each recommendation presents 3 complete outfits following a layering structure
+- Outfits are displayed top-to-bottom: outerwear → layered wear → inner wear → bottoms → shoes
+- Users choose their preferred fit or request new options
+- The system learns from choices to improve future recommendations
+
+### Preference Learning
+- System learns which items you prefer for specific scenarios (activity, season, formality)
+- Scores increase gradually with a diminishing returns formula for stability
+- Scores decay mildly over time to prevent stale preferences from dominating
+- "None of the above" does not penalize any items
+- All decisions are logged for transparency (decision_log.jsonl)
+- Preferences can be reset without losing the decision log
+
+### Decision Log
+- Every recommendation event is logged to `users/{username}/decision_log.jsonl`
+- Logs include: scenario, AI's interpretation, all 3 outfits presented, user's choice
+- Log is append-only and survives preference resets
+- Useful for debugging and analyzing recommendation patterns
 
 ## Usage
 

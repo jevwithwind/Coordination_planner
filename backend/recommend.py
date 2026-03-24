@@ -139,12 +139,14 @@ def get_recommendations(user_message: str, wardrobe_path: str) -> dict:
     for filename, item in filtered_wardrobe.items():
         compact_wardrobe[filename] = {
             "file": filename,
-            "cat": item.get("category", ""),
-            "sub": item.get("subcategory", ""),
-            "color": item.get("color", ""),
-            "material": item.get("material", ""),
+            "cat": item.get("primary_category", ""),
+            "sub": item.get("sub_category", ""),
+            "color": item.get("primary_color", ""),
+            "material": item.get("primary_material", ""),
             "thick": item.get("thickness", ""),
-            "desc": item.get("description", "")
+            "silhouette": item.get("silhouette", ""),
+            "desc": item.get("description", ""),
+            "pref": item.get("preference_score", 1.0)
         }
     
     # Create OpenAI client with Qwen configuration
@@ -156,10 +158,44 @@ def get_recommendations(user_message: str, wardrobe_path: str) -> dict:
     # Prepare system prompt
     system_prompt = (
         "You are a personal styling assistant. Given the user's situation and their available wardrobe items (provided as JSON), "
-        "recommend one or more complete outfits. Respond ONLY with a JSON object (no markdown, no backticks) with this structure: "
-        "{ \"outfits\": [ { \"name\": \"Outfit name\", \"reasoning\": \"Why this works for the situation\", "
-        "\"items\": [\"filename1.jpg\", \"filename2.jpg\", ...] } ], \"styling_tips\": \"Any extra advice\" }. "
-        "Only use filenames that exist in the provided wardrobe. Recommend 1-3 outfits."
+        "recommend exactly 3 complete outfits.\n\n"
+        "Each outfit must follow this layering structure from top to bottom:\n"
+        "1. outerwear (include ONLY if the scenario calls for it — skip for warm weather, indoor-only situations)\n"
+        "2. layered_wear (include ONLY if the scenario calls for extra warmth or layering — skip for warm weather or minimal outfits)\n"
+        "3. inner_wear (always include exactly one)\n"
+        "4. bottoms (always include exactly one)\n"
+        "5. shoes (always include exactly one)\n\n"
+        "Rules:\n"
+        "- Only use filenames that exist in the provided wardrobe\n"
+        "- Each outfit must be a realistic, wearable combination\n"
+        "- The 3 outfits should offer meaningfully different styles or approaches to the scenario (not just minor color swaps)\n"
+        "- Items with higher preference_score have been preferred by this user in similar situations — favor them when appropriate but don't force bad combinations\n"
+        "- Consider the top_pairs list — these are item combos the user has chosen together before\n\n"
+        "Respond ONLY with a JSON object (no markdown, no backticks) with this structure:\n"
+        "{\n"
+        "  \"outfits\": [\n"
+        "    {\n"
+        "      \"name\": \"Outfit name\",\n"
+        "      \"reasoning\": \"Brief explanation of why this works\",\n"
+        "      \"layers\": {\n"
+        "        \"outerwear\": \"filename.jpg or null\",\n"
+        "        \"layered_wear\": \"filename.jpg or null\",\n"
+        "        \"inner_wear\": \"filename.jpg\",\n"
+        "        \"bottoms\": \"filename.jpg\",\n"
+        "        \"shoes\": \"filename.jpg\"\n"
+        "      }\n"
+        "    }\n"
+        "  ],\n"
+        "  \"scenario_breakdown\": {\n"
+        "    \"activity\": \"detected activity or general\",\n"
+        "    \"temperature\": \"detected temp or null\",\n"
+        "    \"season\": \"detected season\",\n"
+        "    \"formality\": \"detected formality level\",\n"
+        "    \"setting\": \"indoor/outdoor/mixed\",\n"
+        "    \"key_considerations\": \"one sentence summary of what matters most for this scenario\"\n"
+        "  },\n"
+        "  \"styling_tips\": \"Any extra advice\"\n"
+        "}"
     )
     
     # Prepare user message with compact filtered wardrobe

@@ -10,6 +10,16 @@ import dotenv
 # Register HEIF opener to support HEIC files
 register_heif_opener()
 
+"""
+Category Definitions:
+- outerwear: anything worn as the outermost layer — coats, jackets, puffer jackets, parkas, blazers worn as outerwear, raincoats
+- layered_wear: mid-layers worn over inner_wear but under outerwear — cardigans, sweaters, hoodies, fleece pullovers, vests
+- inner_wear: items worn directly on the upper body or as the base layer — t-shirts, dress shirts, polo shirts, tank tops, blouses, turtlenecks
+- bottoms: everything below the waist — jeans, chinos, dress pants, shorts, skirts, joggers
+- shoes: all footwear
+- accessories: scarves, belts, hats, bags, watches, ties, gloves
+"""
+
 def get_supported_extensions():
     """Return the set of supported image extensions."""
     return ('.jpg', '.jpeg', '.png', '.webp', '.heic', '.HEIC')
@@ -44,16 +54,17 @@ def process_single_image(image_path):
     # Define the system prompt
     system_prompt = (
         "You are a clothing analysis assistant. For the given clothing image, "
-        "respond ONLY with a JSON object (no markdown, no backticks) with these fields: "
-        "category (one of: top, bottom, outerwear, footwear, accessory, base_layer, dress), "
-        "subcategory (e.g., t-shirt, jeans, sneakers, scarf), "
-        "color (primary color), "
-        "secondary_color (if applicable, else null), "
-        "material (best guess: cotton, wool, polyester, nylon, leather, denim, silk, fleece, synthetic, mixed), "
-        "thickness (one of: ultralight, light, medium, heavy, extra_heavy), "
-        "season (array, one or more of: spring, summer, fall, winter), "
-        "formality (one of: casual, smart_casual, business, formal, athletic), "
-        "description (one natural-language sentence describing the item)."
+        "respond ONLY with a JSON object (no markdown, no backticks) with these exact fields:\n\n"
+        "- primary_category: one of: outerwear, layered_wear, inner_wear, bottoms, shoes, accessories\n"
+        "- sub_category: be specific, e.g., long_coat, trench_coat, puffer_jacket, blazer, cardigan, hoodie, sweater, dress_shirt, t_shirt, polo, tank_top, jeans, chinos, dress_pants, shorts, joggers, sneakers, boots, loafers, oxford_shoes, sandals, scarf, belt, hat, bag\n"
+        "- primary_color: single dominant color (e.g., navy, black, cream, olive, burgundy, charcoal)\n"
+        "- secondary_color: if applicable, else null\n"
+        "- primary_material: one of: cotton, wool, cashmere, polyester, nylon, leather, suede, denim, silk, linen, fleece, synthetic, corduroy, tweed, knit, mixed\n"
+        "- thickness: one of: ultralight, light, medium, heavy, extra_heavy\n"
+        "- occasion: array, one or more of: casual, smart_casual, business_casual, business_formal, formal, athletic, outdoor\n"
+        "- silhouette: one of: slim, regular, relaxed, oversized, tapered, straight, wide, cropped, longline\n"
+        "- season: array, one or more of: spring, summer, fall, winter\n"
+        "- description: one natural-language sentence describing the item"
     )
     
     # Prepare the message

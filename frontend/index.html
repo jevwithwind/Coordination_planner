@@ -4,18 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wardrobe Coordination Planner</title>
+    <title>Wardrobe</title>
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
         }
 
         body {
-            background-color: #f5f3ef;
-            color: #333;
+            background-color: #f5f5f5;
+            color: #1d1d1f;
             line-height: 1.6;
             height: 100vh;
             overflow: hidden;
@@ -27,25 +28,28 @@
             flex-direction: column;
             height: 100vh;
             padding: 20px;
-            background: linear-gradient(135deg, #f5f3ef 0%, #e8e4df 100%);
+            background: #f5f5f5;
         }
 
-        .screen-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-top: 20px;
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-top: 40px;
         }
 
-        .screen-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #2c2924;
-            margin-bottom: 8px;
+        .logo {
+            width: 96px;
+            height: 96px;
+            margin-bottom: 16px;
         }
 
-        .screen-subtitle {
-            color: #6b6b6b;
-            font-size: 1rem;
+        .app-title {
+            font-size: 28px;
+            font-weight: 300;
+            color: #1d1d1f;
+            letter-spacing: -0.5px;
         }
 
         .profiles-grid {
@@ -53,76 +57,74 @@
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 20px;
             flex: 1;
-            overflow-y: auto;
-            padding: 10px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .profile-card {
             background: white;
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
             border-radius: 12px;
-            padding: 20px 15px;
+            padding: 24px 16px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             cursor: pointer;
             transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
         .profile-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .profile-card:active {
-            transform: translateY(0);
+            transform: scale(1);
         }
 
-        .profile-icon {
+        .profile-avatar {
             width: 60px;
             height: 60px;
-            background: #2563eb;
+            background: #007AFF;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 12px;
+            margin: 0 auto 12px;
             color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 20px;
+            font-weight: 500;
         }
 
         .profile-name {
-            font-weight: 600;
-            color: #2c2924;
+            font-weight: 500;
+            color: #1d1d1f;
             margin-bottom: 4px;
+            font-size: 16px;
         }
 
         .profile-count {
-            color: #6b6b6b;
-            font-size: 0.85rem;
+            color: #86868b;
+            font-size: 14px;
         }
 
-        .add-profile-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
-            font-size: 1rem;
+        .add-profile-card {
+            background: white;
+            border: 1px dashed #c6c6c8;
+            border-radius: 12px;
+            padding: 24px 16px;
+            text-align: center;
             cursor: pointer;
-            margin-top: 20px;
-            transition: background 0.2s ease;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            color: #86868b;
+            font-size: 24px;
         }
 
-        .add-profile-btn:hover {
-            background: #1d4ed8;
+        .add-profile-card:hover {
+            border-color: #007AFF;
+            color: #007AFF;
         }
 
         /* Dashboard Screen */
@@ -134,8 +136,8 @@
 
         .dashboard-header {
             background: white;
-            padding: 15px 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 16px 20px;
+            box-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -148,15 +150,16 @@
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: #2563eb;
+            width: 32px;
+            height: 32px;
+            background: #007AFF;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .user-details {
@@ -165,50 +168,52 @@
         }
 
         .user-display-name {
-            font-weight: 600;
-            color: #2c2924;
+            font-weight: 500;
+            color: #1d1d1f;
+            font-size: 16px;
         }
 
         .user-item-count {
-            font-size: 0.85rem;
-            color: #6b6b6b;
+            font-size: 13px;
+            color: #86868b;
         }
 
         .switch-profile-btn {
-            background: #f0f0f0;
+            background: none;
             border: none;
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.9rem;
+            color: #007AFF;
+            font-size: 16px;
             cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
         }
 
         .switch-profile-btn:hover {
-            background: #e0e0e0;
+            background: #f2f2f7;
         }
 
         .tabs {
             display: flex;
             background: white;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
         }
 
         .tab {
             flex: 1;
-            padding: 15px;
+            padding: 16px;
             text-align: center;
             background: none;
             border: none;
-            font-size: 1rem;
+            font-size: 16px;
             cursor: pointer;
-            color: #6b6b6b;
+            color: #86868b;
             border-bottom: 2px solid transparent;
         }
 
         .tab.active {
-            color: #2563eb;
-            border-bottom: 2px solid #2563eb;
-            font-weight: 600;
+            color: #007AFF;
+            border-bottom: 2px solid #007AFF;
+            font-weight: 500;
         }
 
         .tab-content {
@@ -233,7 +238,7 @@
 
         .message {
             margin-bottom: 20px;
-            max-width: 80%;
+            max-width: 85%;
             animation: fadeIn 0.3s ease-out;
         }
 
@@ -255,7 +260,7 @@
         }
 
         .user-bubble {
-            background: #2563eb;
+            background: #007AFF;
             color: white;
             padding: 12px 16px;
             border-radius: 18px 18px 4px 18px;
@@ -268,81 +273,138 @@
 
         .assistant-bubble {
             background: white;
-            color: #2c2924;
-            padding: 12px 16px;
+            color: #1d1d1f;
+            padding: 16px;
             border-radius: 18px 18px 18px 4px;
             display: inline-block;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
         }
 
         .outfit-card {
             background: white;
-            border: 1px solid #e0e0e0;
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
             border-radius: 12px;
-            padding: 15px;
-            margin: 15px 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 16px;
+            margin: 16px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .outfit-header {
+            margin-bottom: 12px;
         }
 
         .outfit-name {
             font-weight: 600;
-            font-size: 1.1rem;
-            color: #2c2924;
-            margin-bottom: 8px;
+            font-size: 16px;
+            color: #1d1d1f;
+            margin-bottom: 4px;
         }
 
         .outfit-reasoning {
-            color: #555;
-            margin-bottom: 12px;
+            color: #86868b;
+            font-size: 14px;
             font-style: italic;
-            font-size: 0.95rem;
         }
 
-        .outfit-items {
+        .outfit-layer {
             display: flex;
-            gap: 10px;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding: 5px 0;
-            scrollbar-width: thin;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f2f2f7;
         }
 
-        .outfit-items::-webkit-scrollbar {
-            height: 6px;
+        .outfit-layer:last-child {
+            border-bottom: none;
         }
 
-        .outfit-items::-webkit-scrollbar-track {
-            background: #f0f0f0;
-            border-radius: 3px;
+        .layer-badge {
+            background: #f2f2f7;
+            color: #86868b;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            margin-right: 12px;
+            white-space: nowrap;
         }
 
-        .outfit-items::-webkit-scrollbar-thumb {
-            background: #c0c0c0;
-            border-radius: 3px;
-        }
-
-        .item-image {
-            width: 80px;
-            height: 80px;
+        .layer-image {
+            width: 50px;
+            height: 50px;
             object-fit: cover;
             border-radius: 8px;
-            border: 1px solid #ddd;
+            margin-right: 12px;
             flex-shrink: 0;
         }
 
-        .styling-tips {
-            background: #f8fafc;
-            border-left: 3px solid #2563eb;
-            padding: 12px 15px;
-            margin-top: 15px;
-            border-radius: 0 6px 6px 0;
-            font-size: 0.95rem;
+        .layer-description {
+            flex: 1;
+            font-size: 14px;
+            color: #1d1d1f;
+        }
+
+        .choose-fit-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        .choose-fit-btn:hover {
+            background: #0062cc;
+        }
+
+        .choose-fit-btn:disabled {
+            background: #c6c6c8;
+            cursor: not-allowed;
+        }
+
+        .none-of-above {
+            color: #86868b;
+            text-align: center;
+            padding: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        .none-of-above:hover {
+            text-decoration: underline;
+        }
+
+        .scenario-breakdown {
+            background: #f2f2f7;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+
+        .scenario-breakdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .scenario-breakdown-content {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .scenario-breakdown-content.show {
+            display: block;
         }
 
         .input-area {
-            padding: 15px 20px;
+            padding: 16px 20px;
             background: white;
-            border-top: 1px solid #e0e0e0;
+            border-top: 0.5px solid rgba(0, 0, 0, 0.08);
             display: flex;
             gap: 10px;
         }
@@ -350,35 +412,35 @@
         #message-input {
             flex: 1;
             padding: 12px 16px;
-            border: 1px solid #ddd;
-            border-radius: 24px;
-            font-size: 1rem;
+            border: 0.5px solid #d2d2d7;
+            border-radius: 20px;
+            font-size: 16px;
             outline: none;
             transition: border-color 0.3s;
         }
 
         #message-input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+            border-color: #007AFF;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
         }
 
         #send-button {
-            background: #2563eb;
+            background: #007AFF;
             color: white;
             border: none;
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 0 24px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 16px;
             transition: background 0.3s;
         }
 
         #send-button:hover {
-            background: #1d4ed8;
+            background: #0062cc;
         }
 
         #send-button:disabled {
-            background: #b0b0b0;
+            background: #c6c6c8;
             cursor: not-allowed;
         }
 
@@ -386,13 +448,13 @@
             display: flex;
             align-items: center;
             padding: 10px;
-            color: #6b6b6b;
+            color: #86868b;
         }
 
         .typing-dot {
             width: 8px;
             height: 8px;
-            background: #6b6b6b;
+            background: #86868b;
             border-radius: 50%;
             margin: 0 2px;
             animation: typing 1.4s infinite ease-in-out;
@@ -425,29 +487,40 @@
 
         /* Wardrobe Tab */
         .wardrobe-header {
-            padding: 15px 20px;
+            padding: 16px 20px;
             background: white;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .filter-select {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
+        .wardrobe-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .upload-btn {
-            background: #2563eb;
-            color: white;
+        .filter-pill {
+            background: #f2f2f7;
+            color: #86868b;
             border: none;
-            border-radius: 8px;
-            padding: 10px 15px;
-            font-size: 1rem;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
             cursor: pointer;
+        }
+
+        .filter-pill.active {
+            background: #007AFF;
+            color: white;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #86868b;
         }
 
         .wardrobe-grid {
@@ -456,15 +529,16 @@
             padding: 20px;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
+            gap: 16px;
         }
 
         .wardrobe-item {
             position: relative;
             aspect-ratio: 1/1;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
         }
 
         .wardrobe-item-img {
@@ -473,63 +547,82 @@
             object-fit: cover;
         }
 
-        .wardrobe-item-label {
+        .wardrobe-item-overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.5);
             color: white;
-            padding: 4px 6px;
-            font-size: 0.7rem;
+            padding: 6px 8px;
+            font-size: 11px;
             text-align: center;
         }
 
         .wardrobe-item-actions {
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 6px;
+            right: 6px;
             display: flex;
-            gap: 5px;
+            gap: 4px;
         }
 
-        .delete-btn {
-            background: rgba(220, 38, 38, 0.8);
-            color: white;
+        .action-btn {
+            background: rgba(255, 255, 255, 0.8);
+            color: #ff3b30;
             border: none;
             border-radius: 4px;
             width: 24px;
             height: 24px;
-            font-size: 0.8rem;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
         }
 
+        .fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 28px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: #6b6b6b;
+            color: #86868b;
         }
 
         .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 40px;
+            margin-bottom: 16px;
         }
 
         .catalog-progress {
-            padding: 15px 20px;
+            padding: 16px 20px;
             background: #fffbeb;
             border: 1px solid #fef3c7;
-            border-radius: 8px;
-            margin: 15px 20px;
+            border-radius: 12px;
+            margin: 16px 20px;
         }
 
         .progress-bar {
-            height: 6px;
+            height: 4px;
             background: #e5e7eb;
-            border-radius: 3px;
+            border-radius: 2px;
             margin-top: 8px;
             overflow: hidden;
         }
@@ -539,6 +632,27 @@
             background: #f59e0b;
             width: 0%;
             transition: width 0.3s ease;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #323232;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
         /* Modal */
@@ -558,25 +672,25 @@
         .modal-content {
             background: white;
             border-radius: 12px;
-            padding: 25px;
+            padding: 24px;
             width: 90%;
             max-width: 400px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         .modal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #2c2924;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #1d1d1f;
         }
 
         .modal-input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 12px 16px;
+            border: 0.5px solid #d2d2d7;
+            border-radius: 12px;
+            font-size: 16px;
             margin-bottom: 20px;
         }
 
@@ -589,25 +703,25 @@
             flex: 1;
             padding: 12px;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 16px;
             cursor: pointer;
         }
 
         .modal-btn.primary {
-            background: #2563eb;
+            background: #007AFF;
             color: white;
         }
 
         .modal-btn.secondary {
-            background: #f0f0f0;
-            color: #333;
+            background: #f2f2f7;
+            color: #1d1d1f;
         }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .profiles-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                max-width: 100%;
             }
 
             .wardrobe-grid {
@@ -616,16 +730,12 @@
         }
 
         @media (max-width: 480px) {
-            .profiles-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-
             .wardrobe-grid {
-                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             }
 
-            .screen-title {
-                font-size: 1.5rem;
+            .app-title {
+                font-size: 24px;
             }
         }
     </style>
@@ -634,18 +744,18 @@
 <body>
     <!-- Profile Selection Screen -->
     <div id="profile-selection-screen" class="profile-selection-screen">
-        <div class="screen-header">
-            <h1 class="screen-title">Wardrobe Coordination Planner</h1>
-            <p class="screen-subtitle">Select your profile to get started</p>
+        <div class="logo-container">
+            <img src="icon.svg" alt="Wardrobe Logo" class="logo">
+            <h1 class="app-title">Wardrobe</h1>
         </div>
 
         <div id="profiles-grid" class="profiles-grid">
             <!-- Profiles will be loaded here -->
         </div>
 
-        <button id="add-profile-btn" class="add-profile-btn">
-            <span>+ Add Profile</span>
-        </button>
+        <div id="add-profile-card" class="add-profile-card">
+            +
+        </div>
     </div>
 
     <!-- Dashboard Screen -->
@@ -658,7 +768,7 @@
                     <div id="user-item-count" class="user-item-count">0 items</div>
                 </div>
             </div>
-            <button id="switch-profile-btn" class="switch-profile-btn">Switch Profile</button>
+            <button id="switch-profile-btn" class="switch-profile-btn">Switch</button>
         </div>
 
         <div class="tabs">
@@ -678,9 +788,7 @@
             </div>
 
             <div class="input-area">
-                <input type="text" id="message-input"
-                    placeholder="e.g., 'Casual day at the office', 'Going to a wedding', 'Cold winter day'"
-                    autocomplete="off">
+                <input type="text" id="message-input" placeholder="e.g., 'Golf tomorrow, 5°C Tokyo'" autocomplete="off">
                 <button id="send-button">Send</button>
             </div>
         </div>
@@ -688,17 +796,20 @@
         <!-- Wardrobe Tab Content -->
         <div id="wardrobe-tab-content" class="tab-content">
             <div class="wardrobe-header">
-                <select id="filter-select" class="filter-select">
-                    <option value="all">All Items</option>
-                    <option value="top">Tops</option>
-                    <option value="bottom">Bottoms</option>
-                    <option value="outerwear">Outerwear</option>
-                    <option value="footwear">Footwear</option>
-                    <option value="accessory">Accessories</option>
-                    <option value="base_layer">Base Layers</option>
-                    <option value="dress">Dresses</option>
-                </select>
-                <button id="upload-btn" class="upload-btn">Upload</button>
+                <div class="wardrobe-filters" id="wardrobe-filters">
+                    <button class="filter-pill active" data-category="all">All</button>
+                    <button class="filter-pill" data-category="outerwear">Outerwear</button>
+                    <button class="filter-pill" data-category="layered_wear">Layered</button>
+                    <button class="filter-pill" data-category="inner_wear">Inner</button>
+                    <button class="filter-pill" data-category="bottoms">Bottoms</button>
+                    <button class="filter-pill" data-category="shoes">Shoes</button>
+                    <button class="filter-pill" data-category="accessories">Accessories</button>
+                </div>
+                <div class="stats-bar" id="stats-bar">
+                    <span>Loading...</span>
+                    <button id="reset-prefs-btn" class="modal-btn secondary"
+                        style="padding: 4px 12px; font-size: 13px;">Reset Preferences</button>
+                </div>
             </div>
 
             <div id="catalog-progress" class="catalog-progress" style="display: none;">
@@ -715,6 +826,9 @@
         </div>
     </div>
 
+    <!-- Upload Button (Floating Action Button) -->
+    <button id="upload-btn" class="fab" title="Upload Photos">+</button>
+
     <!-- Add Profile Modal -->
     <div id="add-profile-modal" class="modal">
         <div class="modal-content">
@@ -728,17 +842,21 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Preference saved ✓</div>
+
     <script>
         // Global state
         let currentUser = null;
         let currentWardrobe = {};
         let eventSource = null;
+        let currentRecommendations = null;
 
         // DOM Elements
         const profileSelectionScreen = document.getElementById('profile-selection-screen');
         const dashboardScreen = document.getElementById('dashboard-screen');
         const profilesGrid = document.getElementById('profiles-grid');
-        const addProfileBtn = document.getElementById('add-profile-btn');
+        const addProfileCard = document.getElementById('add-profile-card');
         const addProfileModal = document.getElementById('add-profile-modal');
         const profileNameInput = document.getElementById('profile-name-input');
         const cancelProfileBtn = document.getElementById('cancel-profile-btn');
@@ -754,19 +872,22 @@
         const chatContainer = document.getElementById('chat-container');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
-        const filterSelect = document.getElementById('filter-select');
+        const filterPills = document.querySelectorAll('.filter-pill');
         const uploadBtn = document.getElementById('upload-btn');
         const wardrobeGrid = document.getElementById('wardrobe-grid');
         const catalogProgress = document.getElementById('catalog-progress');
         const progressFill = document.getElementById('progress-fill');
         const progressText = document.getElementById('progress-text');
+        const statsBar = document.getElementById('stats-bar');
+        const resetPrefsBtn = document.getElementById('reset-prefs-btn');
+        const toast = document.getElementById('toast');
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function () {
             loadProfiles();
 
             // Event listeners
-            addProfileBtn.addEventListener('click', () => {
+            addProfileCard.addEventListener('click', () => {
                 addProfileModal.style.display = 'flex';
                 profileNameInput.value = '';
                 profileNameInput.focus();
@@ -791,6 +912,7 @@
             wardrobeTab.addEventListener('click', () => {
                 setActiveTab('wardrobe');
                 loadWardrobe();
+                loadPreferenceStats();
             });
 
             sendButton.addEventListener('click', sendMessage);
@@ -810,7 +932,17 @@
                 input.click();
             });
 
-            filterSelect.addEventListener('change', renderWardrobeGrid);
+            filterPills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    // Remove active class from all pills
+                    filterPills.forEach(p => p.classList.remove('active'));
+                    // Add active class to clicked pill
+                    pill.classList.add('active');
+                    renderWardrobeGrid();
+                });
+            });
+
+            resetPrefsBtn.addEventListener('click', resetPreferences);
         });
 
         // Load user profiles
@@ -827,7 +959,7 @@
                     const profileCard = document.createElement('div');
                     profileCard.className = 'profile-card';
                     profileCard.innerHTML = `
-                        <div class="profile-icon">${profile.display_name.charAt(0)}</div>
+                        <div class="profile-avatar">${profile.display_name.charAt(0)}</div>
                         <div class="profile-name">${profile.display_name}</div>
                         <div class="profile-count">${itemCount} items</div>
                     `;
@@ -922,7 +1054,8 @@
                 wardrobeTab.classList.add('active');
                 chatTabContent.classList.remove('active');
                 wardrobeTabContent.classList.add('active');
-                loadWardrobe(); // Load wardrobe when switching to this tab
+                loadWardrobe();
+                loadPreferenceStats();
             }
         }
 
@@ -976,6 +1109,13 @@
                     typingEl.remove();
                 }
 
+                // Store current recommendations for decision recording
+                currentRecommendations = {
+                    scenario: data.scenario,
+                    scenario_breakdown: data.scenario_breakdown,
+                    all_outfits: data.outfits
+                };
+
                 // Add assistant response to chat
                 addMessage('assistant', data);
             } catch (error) {
@@ -1014,9 +1154,15 @@
                     bubbleDiv.innerHTML = '<p><strong>Here are my recommendations:</strong></p>';
 
                     if (content.outfits && content.outfits.length > 0) {
-                        content.outfits.forEach(outfit => {
+                        // Create outfit cards container
+                        const outfitsContainer = document.createElement('div');
+
+                        content.outfits.forEach((outfit, index) => {
                             const outfitCard = document.createElement('div');
                             outfitCard.className = 'outfit-card';
+
+                            const outfitHeader = document.createElement('div');
+                            outfitHeader.className = 'outfit-header';
 
                             const outfitName = document.createElement('div');
                             outfitName.className = 'outfit-name';
@@ -1026,40 +1172,99 @@
                             outfitReasoning.className = 'outfit-reasoning';
                             outfitReasoning.textContent = outfit.reasoning;
 
-                            const outfitItems = document.createElement('div');
-                            outfitItems.className = 'outfit-items';
+                            outfitHeader.appendChild(outfitName);
+                            outfitHeader.appendChild(outfitReasoning);
 
-                            outfit.items.forEach(itemFilename => {
-                                const img = document.createElement('img');
-                                img.src = `/photos/${currentUser}/${itemFilename}`;
-                                img.alt = itemFilename;
-                                img.className = 'item-image';
+                            const layersContainer = document.createElement('div');
 
-                                // Add error handling for images that don't exist
-                                img.onerror = function () {
-                                    this.style.display = 'none';
-                                    const placeholder = document.createElement('div');
-                                    placeholder.className = 'item-placeholder';
-                                    placeholder.style.width = '80px';
-                                    placeholder.style.height = '80px';
-                                    placeholder.style.backgroundColor = '#eee';
-                                    placeholder.style.display = 'flex';
-                                    placeholder.style.alignItems = 'center';
-                                    placeholder.style.justifyContent = 'center';
-                                    placeholder.style.borderRadius = '8px';
-                                    placeholder.style.border = '1px solid #ddd';
-                                    placeholder.textContent = 'Image not found';
-                                    this.parentNode.replaceChild(placeholder, this);
-                                };
+                            // Render each layer
+                            const layerOrder = ['outerwear', 'layered_wear', 'inner_wear', 'bottoms', 'shoes'];
+                            for (const layerType of layerOrder) {
+                                const filename = outfit.layers[layerType];
+                                if (filename && filename !== null && filename !== "null") {
+                                    const layerDiv = document.createElement('div');
+                                    layerDiv.className = 'outfit-layer';
 
-                                outfitItems.appendChild(img);
-                            });
+                                    const badge = document.createElement('div');
+                                    badge.className = 'layer-badge';
+                                    badge.textContent = layerType.replace('_', ' ');
 
-                            outfitCard.appendChild(outfitName);
-                            outfitCard.appendChild(outfitReasoning);
-                            outfitCard.appendChild(outfitItems);
-                            bubbleDiv.appendChild(outfitCard);
+                                    const img = document.createElement('img');
+                                    img.src = `/photos/${currentUser}/${filename}`;
+                                    img.alt = filename;
+                                    img.className = 'layer-image';
+
+                                    // Add error handling for images that don't exist
+                                    img.onerror = function () {
+                                        this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><rect width="24" height="24" fill="%23f0f0f0"/><text x="12" y="16" font-size="10" text-anchor="middle" fill="%23999">No Image</text></svg>';
+                                    };
+
+                                    const desc = document.createElement('div');
+                                    desc.className = 'layer-description';
+                                    desc.textContent = currentWardrobe[filename]?.description || filename;
+
+                                    layerDiv.appendChild(badge);
+                                    layerDiv.appendChild(img);
+                                    layerDiv.appendChild(desc);
+
+                                    layersContainer.appendChild(layerDiv);
+                                }
+                            }
+
+                            const chooseBtn = document.createElement('button');
+                            chooseBtn.className = 'choose-fit-btn';
+                            chooseBtn.textContent = 'Choose this fit';
+                            chooseBtn.onclick = () => chooseOutfit(index);
+
+                            outfitCard.appendChild(outfitHeader);
+                            outfitCard.appendChild(layersContainer);
+                            outfitCard.appendChild(chooseBtn);
+
+                            outfitsContainer.appendChild(outfitCard);
                         });
+
+                        // Add "none of the above" button
+                        const noneOfAbove = document.createElement('div');
+                        noneOfAbove.className = 'none-of-above';
+                        noneOfAbove.textContent = 'None of the above — show me different options';
+                        noneOfAbove.onclick = () => chooseOutfit(null);
+
+                        // Add scenario breakdown toggle
+                        const scenarioBreakdown = document.createElement('div');
+                        scenarioBreakdown.className = 'scenario-breakdown';
+
+                        const scenarioHeader = document.createElement('div');
+                        scenarioHeader.className = 'scenario-breakdown-header';
+                        scenarioHeader.innerHTML = '<strong>Scenario analysis</strong> <span>▼</span>';
+
+                        const scenarioContent = document.createElement('div');
+                        scenarioContent.className = 'scenario-breakdown-content';
+                        scenarioContent.innerHTML = `
+                            <div><strong>Activity:</strong> ${content.scenario_breakdown.activity || 'Not specified'}</div>
+                            <div><strong>Temperature:</strong> ${content.scenario_breakdown.temperature || 'Not specified'}</div>
+                            <div><strong>Season:</strong> ${content.scenario_breakdown.season || 'Not specified'}</div>
+                            <div><strong>Formality:</strong> ${content.scenario_breakdown.formality || 'Not specified'}</div>
+                            <div><strong>Setting:</strong> ${content.scenario_breakdown.setting || 'Not specified'}</div>
+                            <div><strong>Key considerations:</strong> ${content.scenario_breakdown.key_considerations || 'Not specified'}</div>
+                        `;
+
+                        scenarioHeader.addEventListener('click', () => {
+                            const arrow = scenarioHeader.querySelector('span');
+                            if (scenarioContent.classList.contains('show')) {
+                                scenarioContent.classList.remove('show');
+                                arrow.textContent = '▼';
+                            } else {
+                                scenarioContent.classList.add('show');
+                                arrow.textContent = '▲';
+                            }
+                        });
+
+                        scenarioBreakdown.appendChild(scenarioHeader);
+                        scenarioBreakdown.appendChild(scenarioContent);
+
+                        bubbleDiv.appendChild(outfitsContainer);
+                        bubbleDiv.appendChild(noneOfAbove);
+                        bubbleDiv.appendChild(scenarioBreakdown);
 
                         if (content.styling_tips) {
                             const tipsDiv = document.createElement('div');
@@ -1082,6 +1287,93 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
+        // Choose an outfit
+        async function chooseOutfit(index) {
+            if (!currentRecommendations) return;
+
+            try {
+                const response = await fetch(`/api/decide/${currentUser}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        scenario: currentRecommendations.scenario,
+                        scenario_breakdown: currentRecommendations.scenario_breakdown,
+                        chosen_outfit_index: index,
+                        all_outfits: currentRecommendations.all_outfits
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Show toast notification
+                showToast('Preference saved ✓');
+
+                // If user chose "none of the above", re-render with new recommendations
+                if (index === null) {
+                    // Update the current recommendations with the new ones
+                    currentRecommendations = {
+                        scenario: data.scenario,
+                        scenario_breakdown: data.scenario_breakdown,
+                        all_outfits: data.outfits
+                    };
+
+                    // Clear the chat container except for the last user message
+                    const lastUserMessage = Array.from(chatContainer.children).pop();
+                    chatContainer.innerHTML = '';
+                    if (lastUserMessage && lastUserMessage.classList.contains('user-message')) {
+                        chatContainer.appendChild(lastUserMessage);
+                    }
+
+                    // Add the new recommendations
+                    addMessage('assistant', data);
+
+                    // Add note about new options
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = 'message assistant-message';
+                    const noteBubble = document.createElement('div');
+                    noteBubble.className = 'assistant-bubble';
+                    noteBubble.textContent = 'Here are 3 more options';
+                    noteDiv.appendChild(noteBubble);
+                    chatContainer.appendChild(noteDiv);
+                } else {
+                    // Disable all choice buttons and highlight chosen card
+                    const allChoiceButtons = document.querySelectorAll('.choose-fit-btn');
+                    allChoiceButtons.forEach(btn => btn.disabled = true);
+
+                    // Find the chosen card and highlight it
+                    const outfitCards = document.querySelectorAll('.outfit-card');
+                    if (outfitCards[index]) {
+                        outfitCards[index].style.border = '2px solid #007AFF';
+                        // Dim other cards
+                        outfitCards.forEach((card, i) => {
+                            if (i !== index) {
+                                card.style.opacity = '0.5';
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error recording decision:', error);
+                alert('Error recording your choice. Please try again.');
+            }
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
         // Load wardrobe for current user
         async function loadWardrobe() {
             if (!currentUser) return;
@@ -1094,7 +1386,7 @@
                 console.error('Error loading wardrobe:', error);
                 wardrobeGrid.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">衣柜</div>
+                        <div class="empty-state-icon">👕</div>
                         <h3>Error Loading Wardrobe</h3>
                         <p>Please try refreshing the page</p>
                     </div>
@@ -1102,18 +1394,67 @@
             }
         }
 
+        // Load preference stats
+        async function loadPreferenceStats() {
+            if (!currentUser) return;
+
+            try {
+                const response = await fetch(`/api/preferences/${currentUser}`);
+                const stats = await response.json();
+
+                statsBar.innerHTML = `
+                    <span>Decisions logged: ${stats.decisions_logged} • ${stats.learning_status}</span>
+                    <button id="reset-prefs-btn" class="modal-btn secondary" style="padding: 4px 12px; font-size: 13px;">Reset Preferences</button>
+                `;
+
+                // Reattach event listener
+                const newResetBtn = document.getElementById('reset-prefs-btn');
+                if (newResetBtn) {
+                    newResetBtn.addEventListener('click', resetPreferences);
+                }
+            } catch (error) {
+                console.error('Error loading preference stats:', error);
+                statsBar.innerHTML = '<span>Error loading stats</span>';
+            }
+        }
+
+        // Reset preferences
+        async function resetPreferences() {
+            if (!currentUser) return;
+
+            if (!confirm('Are you sure you want to reset your preferences? This will clear your learned preferences but keep your decision log.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/preferences/${currentUser}/reset`, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                showToast('Preferences reset ✓');
+                loadPreferenceStats();
+            } catch (error) {
+                console.error('Error resetting preferences:', error);
+                alert('Error resetting preferences. Please try again.');
+            }
+        }
+
         // Render wardrobe grid based on filter
         function renderWardrobeGrid() {
             if (!currentWardrobe) return;
 
-            const filter = filterSelect.value;
+            const activeFilter = document.querySelector('.filter-pill.active').dataset.category;
             const items = Object.entries(currentWardrobe);
 
             // Filter items based on selection
             let filteredItems = items;
-            if (filter !== 'all') {
+            if (activeFilter !== 'all') {
                 filteredItems = items.filter(([filename, item]) => {
-                    return item.category === filter;
+                    return item.primary_category === activeFilter;
                 });
             }
 
@@ -1144,15 +1485,15 @@
                     this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24"><rect width="24" height="24" fill="%23f0f0f0"/><text x="12" y="16" font-size="12" text-anchor="middle" fill="%23999">No Image</text></svg>';
                 };
 
-                const label = document.createElement('div');
-                label.className = 'wardrobe-item-label';
-                label.textContent = `${item.category.charAt(0).toUpperCase() + item.category.slice(1)} · ${item.color}`;
+                const overlay = document.createElement('div');
+                overlay.className = 'wardrobe-item-overlay';
+                overlay.textContent = `${item.sub_category.replace('_', ' ')} • ${item.primary_color}`;
 
                 const actions = document.createElement('div');
                 actions.className = 'wardrobe-item-actions';
 
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn';
+                deleteBtn.className = 'action-btn';
                 deleteBtn.textContent = '×';
                 deleteBtn.title = 'Delete item';
                 deleteBtn.addEventListener('click', (e) => {
@@ -1165,7 +1506,7 @@
                 actions.appendChild(deleteBtn);
 
                 itemDiv.appendChild(img);
-                itemDiv.appendChild(label);
+                itemDiv.appendChild(overlay);
                 itemDiv.appendChild(actions);
 
                 wardrobeGrid.appendChild(itemDiv);
@@ -1237,6 +1578,7 @@
                         // Refresh wardrobe after a short delay
                         setTimeout(() => {
                             loadWardrobe();
+                            loadPreferenceStats();
                             catalogProgress.style.display = 'none';
                         }, 1000);
 
@@ -1283,6 +1625,7 @@
 
                 // Update item count in header
                 userItemCount.textContent = `${Object.keys(currentWardrobe).length} items`;
+                loadPreferenceStats();
             } catch (error) {
                 console.error('Error deleting item:', error);
                 alert('Error deleting item: ' + error.message);

@@ -10,6 +10,8 @@ import json
 from datetime import datetime
 import mimetypes
 from .recommend import get_recommendations
+from .preferences import enrich_wardrobe_with_preferences, record_decision
+from .decision_log import log_decision, get_decision_count
 
 # Create the FastAPI app
 app = FastAPI(title="Wardrobe Coordination Planner")
@@ -42,6 +44,12 @@ class UserCreateRequest(BaseModel):
 class ChatRequest(BaseModel):
     message: str
     username: str
+
+class DecideRequest(BaseModel):
+    scenario: str
+    scenario_breakdown: dict
+    chosen_outfit_index: int = None  # 0, 1, 2 for chosen outfit, or None for "none of the above"
+    all_outfits: list
 
 class CatalogProgress:
     def __init__(self):
@@ -190,13 +198,144 @@ async def chat(request: ChatRequest):
     try:
         # Get recommendations using the recommend module
         wardrobe_path = f"../users/{request.username}/wardrobe.json"
+        
+        # Load wardrobe and enrich with preferences
+        from .preferences import enrich_wardrobe_with_preferences
+        import os
+        import json
+        
+        if not os.path.exists(wardrobe_path):
+            return {"outfits": [], "scenario_breakdown": {}, "styling_tips": "No wardrobe items found. Please upload and catalog some clothing items first.", "scenario": request.message}
+        
+        with open(wardrobe_path, 'r', encoding='utf-8') as f:
+            wardrobe = json.load(f)
+        
+        # Extract scenario features from the user message for preference calculation
+        # This is a simplified approach - in a real implementation you'd have more sophisticated NLP
+        scenario_features = []
+        msg_lower = request.message.lower()
+        if any(word in msg_lower for word in ["golf", "tennis", "sport", "athletic", "exercise", "workout", "run", "hike"]):
+            scenario_features.append("athletic")
+        if any(word in msg_lower for word in ["formal", "wedding", "event", "ceremony", "gala"]):
+            scenario_features.append("formal")
+        if any(word in msg_lower for word in ["office", "work", "business", "meeting", "interview"]):
+            scenario_features.append("business")
+        if any(word in msg_lower for word in ["casual", "hangout", "friend", "relaxed"]):
+            scenario_features.append("casual")
+        
+        # Enrich wardrobe with preferences
+        enriched_wardrobe = enrich_wardrobe_with_preferences(wardrobe, request.username, scenario_features)
+        
+        # Temporarily save enriched wardrobe for get_recommendations to use
+        temp_path = f"../users/{request.username}/wardrobe_enriched_temp.json"
+        with open(temp_path, 'w', encoding='utf-8') as f:
+            json.dump(enriched_wardrobe, f, indent=2, ensure_ascii=False)
+        
         recommendations = get_recommendations(
             user_message=request.message,
-            wardrobe_path=wardrobe_path
+            wardrobe_path=temp_path
         )
+        
+        # Clean up temp file
+        os.remove(temp_path)
+        
+        # Add the original scenario to the response
+        recommendations["scenario"] = request.message
+        
         return JSONResponse(content=recommendations)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
+
+@app.post("/api/decide/{username}")
+async def decide_outfit(username: str, request: DecideRequest):
+    """Record user decision on outfit recommendations."""
+    try:
+        if request.chosen_outfit_index is not None:
+            # User chose an outfit - update preferences
+            chosen_outfit = request.all_outfits[request.chosen_outfit_index]
+            
+            # Extract items from the chosen outfit layers
+            chosen_items = []
+            for layer_key, filename in chosen_outfit.get("layers", {}).items():
+                if filename and filename != "null":  # Check for explicit null string
+                    chosen_items.append(filename)
+            
+            # Extract scenario features from scenario breakdown
+            scenario_features = []
+            scenario_breakdown = request.scenario_breakdown
+            if scenario_breakdown.get("activity"):
+                scenario_features.append(scenario_breakdown["activity"])
+            if scenario_breakdown.get("season"):
+                scenario_features.append(scenario_breakdown["season"])
+            if scenario_breakdown.get("formality"):
+                scenario_features.append(scenario_breakdown["formality"])
+            
+            # Record the decision
+            from .preferences import record_decision
+            record_decision(username, chosen_items, scenario_features)
+        
+        # Log the decision regardless of whether an outfit was chosen
+        from .decision_log import log_decision
+        log_decision(
+            username=username,
+            scenario=request.scenario,
+            scenario_breakdown=request.scenario_breakdown,
+            outfits_presented=request.all_outfits,
+            user_choice=request.chosen_outfit_index
+        )
+        
+        # If user chose "none of the above", return new recommendations
+        if request.chosen_outfit_index is None:
+            wardrobe_path = f"../users/{username}/wardrobe.json"
+            
+            # Load wardrobe and enrich with preferences
+            from .preferences import enrich_wardrobe_with_preferences
+            import os
+            import json
+            
+            if not os.path.exists(wardrobe_path):
+                return {"outfits": [], "scenario_breakdown": {}, "styling_tips": "No wardrobe items found.", "scenario": request.scenario}
+            
+            with open(wardrobe_path, 'r', encoding='utf-8') as f:
+                wardrobe = json.load(f)
+            
+            # Extract scenario features from the scenario for preference calculation
+            scenario_features = []
+            msg_lower = request.scenario.lower()
+            if any(word in msg_lower for word in ["golf", "tennis", "sport", "athletic", "exercise", "workout", "run", "hike"]):
+                scenario_features.append("athletic")
+            if any(word in msg_lower for word in ["formal", "wedding", "event", "ceremony", "gala"]):
+                scenario_features.append("formal")
+            if any(word in msg_lower for word in ["office", "work", "business", "meeting", "interview"]):
+                scenario_features.append("business")
+            if any(word in msg_lower for word in ["casual", "hangout", "friend", "relaxed"]):
+                scenario_features.append("casual")
+            
+            # Enrich wardrobe with preferences
+            enriched_wardrobe = enrich_wardrobe_with_preferences(wardrobe, username, scenario_features)
+            
+            # Temporarily save enriched wardrobe for get_recommendations to use
+            temp_path = f"../users/{username}/wardrobe_enriched_temp.json"
+            with open(temp_path, 'w', encoding='utf-8') as f:
+                json.dump(enriched_wardrobe, f, indent=2, ensure_ascii=False)
+            
+            recommendations = get_recommendations(
+                user_message=request.scenario,
+                wardrobe_path=temp_path
+            )
+            
+            # Clean up temp file
+            os.remove(temp_path)
+            
+            # Add the original scenario to the response
+            recommendations["scenario"] = request.scenario
+            
+            return JSONResponse(content=recommendations)
+        else:
+            # User chose an outfit, return success response
+            return {"status": "success", "message": "Decision recorded"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing decision: {str(e)}")
 
 @app.get("/api/wardrobe/{username}")
 async def get_wardrobe(username: str):
@@ -291,6 +430,20 @@ async def start_catalog(request: Request, username: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error starting catalog: {str(e)}")
 
+@app.get("/api/wardrobe/{username}")
+async def get_wardrobe(username: str):
+    """Return the wardrobe data for a specific user."""
+    try:
+        wardrobe_path = f"../users/{username}/wardrobe.json"
+        if not os.path.exists(wardrobe_path):
+            return {}
+        
+        with open(wardrobe_path, 'r', encoding='utf-8') as f:
+            wardrobe = json.load(f)
+        return wardrobe
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error reading wardrobe: {str(e)}")
+
 @app.delete("/api/wardrobe/{username}/{filename}")
 async def delete_wardrobe_item(username: str, filename: str):
     """Remove an item from the wardrobe."""
@@ -320,6 +473,48 @@ async def delete_wardrobe_item(username: str, filename: str):
         return {"message": f"Item {filename} removed successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error removing item: {str(e)}")
+
+@app.get("/api/preferences/{username}")
+async def get_preferences_stats(username: str):
+    """Get preference learning statistics for a user."""
+    try:
+        from .decision_log import get_decision_count
+        from .preferences import load_preferences
+        
+        decision_count = get_decision_count(username)
+        preferences = load_preferences(username)
+        
+        # Determine learning status based on decision count
+        if decision_count == 0:
+            learning_status = "Cold start"
+        elif decision_count <= 5:
+            learning_status = "Building"
+        else:
+            learning_status = "Well-trained"
+        
+        return {
+            "decisions_logged": decision_count,
+            "learning_status": learning_status
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting preferences stats: {str(e)}")
+
+@app.post("/api/preferences/{username}/reset")
+async def reset_preferences(username: str):
+    """Reset user preferences (but keep decision log)."""
+    try:
+        from .preferences import save_preferences
+        
+        # Create default preferences
+        default_prefs = {
+            "item_scores": {},
+            "decisions_since_last_decay": 0
+        }
+        save_preferences(username, default_prefs)
+        
+        return {"message": "Preferences reset successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error resetting preferences: {str(e)}")
 
 @app.get("/")
 async def serve_index():
