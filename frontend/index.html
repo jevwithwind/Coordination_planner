@@ -419,6 +419,12 @@
             transition: border-color 0.3s;
         }
 
+        #message-input::placeholder {
+            color: #86868b;
+            opacity: 0.6;
+            font-style: italic;
+        }
+
         #message-input:focus {
             border-color: #007AFF;
             box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
@@ -846,11 +852,92 @@
     <div id="toast" class="toast">Preference saved ✓</div>
 
     <script>
+        // Placeholder scenarios array
+        const PLACEHOLDER_SCENARIOS = [
+            // Weather & temperature
+            "What should I wear? It's 2°C and snowing outside",
+            "Outfit for a rainy 15°C day in Tokyo",
+            "It's going to be 35°C and humid tomorrow",
+            "Windy autumn day, around 12°C",
+
+            // Work & business
+            "Important client meeting tomorrow morning",
+            "Casual Friday at the office",
+            "Job interview at a tech startup",
+            "Business dinner with international partners",
+            "First day at a new company, business casual dress code",
+            "Presenting at a company all-hands meeting",
+            "Working from a coffee shop today",
+
+            // Social & dining
+            "Dinner date at a nice Italian restaurant",
+            "Brunch with friends this Sunday",
+            "House party tonight, casual vibe",
+            "Meeting my partner's parents for the first time",
+            "Birthday dinner at an upscale rooftop bar",
+            "Casual lunch at a ramen shop",
+            "Wine tasting in the countryside",
+
+            // Sports & outdoor
+            "Going golfing tomorrow morning, 8°C",
+            "Weekend hiking trip, mountain trails",
+            "Watching a baseball game at the stadium",
+            "Morning jog in the park, 5°C",
+            "Beach volleyball afternoon",
+            "Cycling around the city today",
+            "Skiing trip this weekend",
+
+            // Events & entertainment
+            "What should I wear to the Summer Sonic concert?",
+            "Attending a friend's wedding reception",
+            "Art gallery opening tonight",
+            "Music festival this weekend, outdoors all day",
+            "Going to the theater to see a play",
+            "Neighborhood summer festival and fireworks",
+            "New Year's Eve party at a hotel",
+            "Watching cherry blossoms in the park",
+
+            // Travel
+            "Flying to Seoul for a 3-day trip",
+            "Weekend getaway to a hot spring resort",
+            "Day trip to Kamakura, lots of walking",
+            "Airport outfit — long flight to Europe",
+            "Exploring street markets in Bangkok, 33°C",
+            "Sightseeing in London, expecting rain",
+
+            // Seasonal
+            "First warm day of spring, 20°C",
+            "Peak summer, 30°C outdoor barbecue",
+            "Crisp fall morning, apple picking",
+            "Cold winter evening walk through the city",
+            "Layering for unpredictable spring weather",
+            "Muggy summer evening outdoor dining",
+
+            // Casual & everyday
+            "Running errands and grocery shopping",
+            "Relaxed Sunday, might grab coffee",
+            "Study session at the library all day",
+            "Moving apartments — need to be practical",
+            "Dog walking in the morning, 10°C",
+            "Video call from home but might go out after",
+            "Picking up a friend from the airport",
+
+            // Specific & fun
+            "Outfit for family holiday photo",
+            "Going to a cat café",
+            "First time at a sumo tournament",
+            "Visiting a shrine for New Year's prayers",
+            "Karaoke night with coworkers",
+            "Theme park day — lots of walking and rides",
+            "Volunteering at an outdoor community event"
+        ];
+
         // Global state
         let currentUser = null;
         let currentWardrobe = {};
         let eventSource = null;
         let currentRecommendations = null;
+        let lastPlaceholderIndex = -1; // Track the last placeholder index to avoid repetition
 
         // DOM Elements
         const profileSelectionScreen = document.getElementById('profile-selection-screen');
@@ -882,8 +969,25 @@
         const resetPrefsBtn = document.getElementById('reset-prefs-btn');
         const toast = document.getElementById('toast');
 
+        // Function to set a random placeholder
+        function setRandomPlaceholder() {
+            if (PLACEHOLDER_SCENARIOS.length === 0) return;
+
+            let newIndex;
+            // Make sure we don't get the same placeholder twice in a row
+            do {
+                newIndex = Math.floor(Math.random() * PLACEHOLDER_SCENARIOS.length);
+            } while (PLACEHOLDER_SCENARIOS.length > 1 && newIndex === lastPlaceholderIndex);
+
+            lastPlaceholderIndex = newIndex;
+            messageInput.placeholder = PLACEHOLDER_SCENARIOS[newIndex];
+        }
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function () {
+            // Set initial random placeholder
+            setRandomPlaceholder();
+
             loadProfiles();
 
             // Event listeners
@@ -920,6 +1024,14 @@
             messageInput.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     sendMessage();
+                }
+            });
+
+            // Set a new random placeholder when the input is cleared after sending a message
+            messageInput.addEventListener('input', function () {
+                if (this.value === '') {
+                    // Reset to a random placeholder if the input is empty
+                    setRandomPlaceholder();
                 }
             });
 
